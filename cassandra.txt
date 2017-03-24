@@ -1,0 +1,177 @@
+apache - cassandra:
+its an open source project
+
+bigdata:
+involve three V
+volume:gigabytes
+velocity:sensor data,click stream,financial transactions,high injest rate,high update rate
+variety:different formats
+
+characterisitics:
+multi region availability
+very fast and reliable response
+no single point of failure
+
+why not relational data?
+rel model provides normalized table schema,cross table joins,ACID compaliance but at high cost
+sharding tables across systems is complex and fragile
+modern application needs speed and availability 
+
+strategies of big data:
+data distribute across nodes
+relax consistency requirements
+relax schema requirements
+optimize data to suit actual needs
+lay data on disk exactly like we query data so that we can have low latency
+
+cluster: some number of nodes that replicate data
+inside cluster we have two levels of logical grouping: data center and rack
+
+data center: its not uncommon to have mulitple cassandra-dc on single physical data center
+rack: unit of architecture which could fail. if a single point of failure occurs, we can isolate them
+ eg:like availability zones of amazon.
+
+
+token range: cassandra uses to chop up or partition datasets
+full token range: 2^63  to -2^63
+one token range per cluster
+
+noSql database:
+four classes of non relational db:
+graph:		neo4j,titan
+key-value:     memcached,redis
+document:   couchdb,mangodb
+column family: bigtable,cassandra
+
+cassandra is partitioned column store
+
+three key factors of nosql db:
+CAP theorem: among consistency,availability,partition tolerance pick two
+this theorem applies to distributed systems. if we have single server db, this doesnt apply
+
+we have the option to choose consistency on a query level on cassandra
+we can make cassandra swing from AP database to CA database for one transaction
+
+DevOps: developer and operator roles merge together here
+agile colloboration
+cross functional teams
+operators coding systems automations
+developers operating systems
+
+nosql db is purpose driven db
+------------------------------------------------------------
+cassandra:
+massively linear scalable nosql database
+
+fully distributed with no single point of failure
+free and open source with deep developer support
+highly performant with near linear horizontal scaling in proper use cases
+
+no single point of failure due to horizonatal scaling
+
+cassandra history:
+facebook took google big table (storage model) and amazon dynamo(distribute backbone) and integrated as cassandra 
+
+cassandra 2.1 version
+cql(cassandra query language)
+
+cql replaced complex storage oriented THRIFT(key-value) api used in prior versions
+data is modeled using cql
+-------------------------------------------------------------
+use cases:
+uptime
+low latency
+flexibility
+
+cassandra db: transactional work load
+spark:analytical work load,adhoc reporting
+solr:search work load
+
+examples:
+playlist and collections(spotify)
+personalization and recommendation engines(Ebay)
+messaging(instagram)
+fraud detection(Barracuda)
+sensor data(Zonar)
+
+netflix,NASA,expedia,cisco etc
+----------------------------------------------------------------
+installation:
+prepare OS by having java jdk1.7+,configure java_home,install java native access(jna)libraries for production use,synchronize clocks on each node system using tool like NTP,disable swap(sudo swapoff -all)
+
+ports:
+22 SSH port
+8888 Opscenter website
+----------------------------------------------------------------
+configure:
+configuation files include:
+cassandra.yaml: 		primary config file for each node
+cassandra-env.sh:		set all our java env varaiables including memory size for jvm(max_heap_size)
+				max_heap_size(8gb max) and heap_newsize(quarter of max_heap_size)
+logback.xml:			system log settings
+				default log level is INFO and location of log file
+cassandra-rackdc.properties:	config to set rack and datacenter to which node belongs
+cassandra-topology.properties: 	configure IP address for racks and data centers
+bin/cassandra-in.sh:		java_home,cassandra_conf,classpath
+
+
+properties in cassandra.yaml:
+cluster_name: all nodes in cluster have same value
+listen_address: ip address or host name other nodes use to connect to this node
+rpc_address/rpc_port:listen address /port for Thrift client connections
+native_transport_port:listen address for java driver binary protocol
+commitlog_directory: journal of writes
+data_file_directory:store files that are optimized for read access(sstables)
+saved_caches_directory: cache in memory and flush to disk
+----------------------------------------------------------------
+cassandra start and stop:
+
+ls -alh -->to see state of directory of cassandra
+vi <filename> ---> to edit file
+rm -Rf <filenames> --> to remove files
+bin/cassandra  -f --> to start cassandra in foreground(shut down is ctrl+c)
+bin/cassandra  --> to start cassandra in background (sudo service cassandra start --->as a package)
+ps aux | grep cassandra -->to see background process id of cassandra
+kill <process id> --> to kill cassandra process id
+
+config default settings allow you to start cassandra as a standalone,single local instance
+--------------------------------------
+
+
+
+
+
+
+
+introduce cassandra tools:	
+internal architecture:
+CQL:
+CASSandra write path:
+cassandra read path:
+compaction:
+tombstones:
+hardware and troubleshooting:
+
+
+
+
+rm -Rf data logs --> remove data and logs directories to reset cassandra to its default stage
+
+default settings in config file in cassandra is for standalone,single, local instance
+to use cassandra for production use or multiple nodes, we need to change those settings in config file
+
+1. java 7 jdk(req),jna(req)java native access in production
+2. synchronize all clocks(ntp) and disable swap
+3. 3 cassandra distros -->DS Enterprise,DS community,apache
+4. datastax adds --> opscenter,devcenter,security,search,analytics
+5. install by DEB or YUM package,MIS installer or tarball
+6. configure: cassandra.yaml,cassandra-env.sh,logback.xml,cassandra-rackdc.properties,cassandra-topology.properties
+7. nodes in cluster share a cluster_name and receive connections via their own listen_address
+8. data is managed in /data,/commitlog and /saved_caches directories
+9. stop cassandra using ctrl-c
+10. monitor cassandra behaviour through system.log configured in logback.xml
+
+
+
+
+
